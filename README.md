@@ -1,0 +1,3 @@
+# Transcriptions
+
+Following Laracasts series
