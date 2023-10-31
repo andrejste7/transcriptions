@@ -2,12 +2,14 @@
 
 namespace Laracasts\Transcription;
 
+use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use JsonSerializable;
 use Traversable;
 
-class Lines implements Countable, IteratorAggregate
+class Lines implements Countable, IteratorAggregate, ArrayAccess, JsonSerializable
 {
     public function __construct(protected array $lines)
     {
@@ -36,5 +38,34 @@ class Lines implements Countable, IteratorAggregate
     public function __toString(): string
     {
         return implode("\n", $this->lines);
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->lines[$offset]);
+    }
+
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->lines[$offset];
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        if (is_null($offset)) {
+            $this->lines[] = $value;
+        } else {
+            $this->lines[$offset] = $value;
+        }
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        unset($this->lines[$offset]);
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->lines;
     }
 }

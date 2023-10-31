@@ -3,6 +3,7 @@
 namespace Laracasts\test;
 
 use Laracasts\Transcription\Line;
+use Laracasts\Transcription\Lines;
 use Laracasts\Transcription\Transcription;
 use PHPUnit\Framework\TestCase;
 
@@ -56,5 +57,25 @@ EOT;
             trim(preg_replace('/\R+/', '', $expected)),
             trim(preg_replace('/\R+/', '', $result))
         );
+    }
+
+    /** @test */
+    public function it_implements_array_access_interface()
+    {
+        $lines = $this->transcription->lines();
+
+        $this->assertInstanceOf(\ArrayAccess::class, $lines);
+        $this->assertInstanceOf(Lines::class, $lines);
+        $this->assertInstanceOf(\Countable::class, $lines);
+        $this->assertInstanceOf(\IteratorAggregate::class, $lines);
+    }
+
+    /** @test */
+    public function it_can_render_as_json()
+    {
+        $lines = $this->transcription->lines();
+
+        $this->assertInstanceOf(\JsonSerializable::class, $lines);
+        $this->assertJson(json_encode($lines));
     }
 }
